@@ -21,7 +21,9 @@ const state = {
     location: ""
   },
   filter: "all",
-  query: ""
+  query: "",
+  marketPage: 1,
+  savedPage: 1
 };
 
 const realListings = state.listings.filter((listing) => {
@@ -39,6 +41,14 @@ const screens = document.querySelectorAll(".screen");
 const tabs = document.querySelectorAll(".tab");
 const listingGrid = document.querySelector("#listing-grid");
 const savedGrid = document.querySelector("#saved-grid");
+const marketPagination = document.querySelector("#market-pagination");
+const marketPrevPage = document.querySelector("#market-prev-page");
+const marketNextPage = document.querySelector("#market-next-page");
+const marketPageStatus = document.querySelector("#market-page-status");
+const savedPagination = document.querySelector("#saved-pagination");
+const savedPrevPage = document.querySelector("#saved-prev-page");
+const savedNextPage = document.querySelector("#saved-next-page");
+const savedPageStatus = document.querySelector("#saved-page-status");
 const chatList = document.querySelector("#chat-list");
 const conversationPanel = document.querySelector("#conversation-panel");
 const conversationTitle = document.querySelector("#conversation-title");
@@ -79,6 +89,7 @@ let selectedFiles = [];
 let selectedPhotos = [];
 let editingListingId = null;
 const maxListingPhotoBytes = 5 * 1024 * 1024;
+const listingsPerPage = 6;
 const usdFormatter = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "USD",
@@ -195,26 +206,56 @@ function activeListings() {
 function renderListings() {
   listingGrid.innerHTML = "";
   const items = activeListings();
+  const page = normalizePage(state.marketPage, items.length);
+  const pagedItems = paginate(items, page);
+  state.marketPage = page;
 
   if (!items.length) {
     listingGrid.append(emptyState("No real listings yet."));
+    updatePagination(marketPagination, marketPrevPage, marketNextPage, marketPageStatus, 1, 1);
     return;
   }
 
-  items.forEach((item) => listingGrid.append(createListingCard(item)));
+  pagedItems.forEach((item) => listingGrid.append(createListingCard(item)));
+  updatePagination(marketPagination, marketPrevPage, marketNextPage, marketPageStatus, page, pageCount(items.length));
 }
 
 function renderSaved() {
   savedGrid.innerHTML = "";
   const savedIds = state.saved.map(String);
   const items = state.listings.filter((item) => savedIds.includes(String(item.id)));
+  const page = normalizePage(state.savedPage, items.length);
+  const pagedItems = paginate(items, page);
+  state.savedPage = page;
 
   if (!items.length) {
     savedGrid.append(emptyState("Saved dresses will appear here."));
+    updatePagination(savedPagination, savedPrevPage, savedNextPage, savedPageStatus, 1, 1);
     return;
   }
 
-  items.forEach((item) => savedGrid.append(createListingCard(item)));
+  pagedItems.forEach((item) => savedGrid.append(createListingCard(item)));
+  updatePagination(savedPagination, savedPrevPage, savedNextPage, savedPageStatus, page, pageCount(items.length));
+}
+
+function pageCount(itemCount) {
+  return Math.max(1, Math.ceil(itemCount / listingsPerPage));
+}
+
+function normalizePage(page, itemCount) {
+  return Math.min(Math.max(1, Number(page || 1)), pageCount(itemCount));
+}
+
+function paginate(items, page) {
+  const start = (page - 1) * listingsPerPage;
+  return items.slice(start, start + listingsPerPage);
+}
+
+function updatePagination(container, previousButton, nextButton, status, page, totalPages) {
+  container.hidden = totalPages <= 1;
+  previousButton.disabled = page <= 1;
+  nextButton.disabled = page >= totalPages;
+  status.textContent = `Page ${page} of ${totalPages}`;
 }
 
 function renderChats() {
@@ -930,6 +971,7 @@ clearFiltersButton.addEventListener("click", () => {
   sizeFilter.value = "";
   locationFilter.value = "";
   state.filters = { style: "", designer: "", color: "", size: "", location: "" };
+  state.marketPage = 1;
   renderListings();
 });
 
@@ -942,6 +984,7 @@ clearFiltersButton.addEventListener("click", () => {
       size: sizeFilter.value,
       location: locationFilter.value
     };
+    state.marketPage = 1;
     renderListings();
   });
 });
@@ -951,13 +994,35 @@ document.querySelectorAll(".chip").forEach((chip) => {
     document.querySelectorAll(".chip").forEach((item) => item.classList.remove("active"));
     chip.classList.add("active");
     state.filter = chip.dataset.filter;
+    state.marketPage = 1;
     renderListings();
   });
 });
 
 searchInput.addEventListener("input", (event) => {
   state.query = event.target.value;
+  state.marketPage = 1;
   renderListings();
+});
+
+marketPrevPage.addEventListener("click", () => {
+  state.marketPage -= 1;
+  renderListings();
+});
+
+marketNextPage.addEventListener("click", () => {
+  state.marketPage += 1;
+  renderListings();
+});
+
+savedPrevPage.addEventListener("click", () => {
+  state.savedPage -= 1;
+  renderSaved();
+});
+
+savedNextPage.addEventListener("click", () => {
+  state.savedPage += 1;
+  renderSaved();
 });
 
 photoInput.addEventListener("change", (event) => {

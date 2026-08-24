@@ -61,3 +61,5 @@
 - Discussed copyright registration basics for the app, including automatic protection, registration benefits, and the difference between protecting code/design expression versus protecting the general marketplace idea.
 - Updated the app About text to the revised first-person Laniakea Bellydancer wording.
 - Removed the optional contact email field from the feedback form and kept feedback tracking through Supabase.
+- Created `TheBellyDanceDressingRoom-Changelog.docx` as a Word copy of the project changelog for records.
+- Added pagination for Market and Wishlist listings so dress cards are split across pages instead of becoming one endless list.
