@@ -53,3 +53,11 @@
 - Documented the Supabase Auth branding concern: testers may distrust the default random `supabase.co` project URL, and a paid custom domain is the clean fix.
 - Added `GITHUB-SHOWCASE-GUIDE.md` with safe GitHub upload steps that avoid exposing credentials.
 - Added a README project narrative summarizing the product thinking, Supabase configuration, deployment work, accessibility improvements, and security review.
+- Reworded the README setup section into safer public configuration notes that avoid exposing or encouraging publication of live credentials.
+- Split documentation into a public `README.md` and internal `PRIVATE-README.md`, and removed LLC wording from the public README.
+- Added `README_PRIVATE.md` with the detailed Supabase, Google sign-in, Netlify, security, and deployment notes from the earlier README.
+- Updated the public README attribution to use only `Angelica`.
+- Added a public README section explaining how Codex was used as an AI coding collaborator while preserving the human product and security decision-making narrative.
+- Discussed copyright registration basics for the app, including automatic protection, registration benefits, and the difference between protecting code/design expression versus protecting the general marketplace idea.
+- Updated the app About text to the revised first-person Laniakea Bellydancer wording.
+- Removed the optional contact email field from the feedback form and kept feedback tracking through Supabase.

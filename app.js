@@ -853,7 +853,6 @@ async function submitFeedback(event) {
   event.preventDefault();
   const form = new FormData(feedbackForm);
   const message = String(form.get("feedback")).trim();
-  const contact = String(form.get("contact")).trim();
 
   if (!message) {
     feedbackNote.textContent = "Add a feedback note before sending.";
@@ -867,7 +866,7 @@ async function submitFeedback(event) {
 
   const { error } = await supabaseClient.from("beta_feedback").insert({
     user_id: state.session?.user?.id || null,
-    contact_email: contact || state.session?.user?.email || null,
+    contact_email: state.session?.user?.email || null,
     message
   });
 
