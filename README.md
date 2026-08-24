@@ -41,49 +41,37 @@ This project demonstrates product thinking, iterative development, database desi
 
 TheBellyDanceDressingRoom is an App developed by Laniakea Bellydancer LLC to help dancers around the world to buy and sell dresses in a centralized manner. About me: Laniakea Bellydancer is a Puerto Rican artist based in Maryland, USA. She loves gigging and understands the importance of getting new costumes to support all your performance needs!
 
-## Supabase Setup
+## Configuration Notes
 
-1. Create a free Supabase project.
-2. Open the Supabase SQL Editor.
-3. Run the contents of `supabase-schema.sql`.
-4. In Supabase, go to Project Settings > API.
-5. Copy your Project URL and anon public key.
-6. Paste them into `config.js`.
-7. In Authentication > Sign In / Providers, enable Google after creating Google OAuth credentials.
+This repository is safe to share as a showcase project because the live runtime configuration is intentionally kept out of source control.
 
-If you already ran the first schema before these tune-up features were added, run `supabase-tuneup.sql` in the Supabase SQL Editor too.
+The app is designed to connect to:
 
-See `SUPABASE-README.md` for the schema/migration notes.
+- Supabase Auth for Google sign-in
+- Supabase Database for listings, profiles, reports, feedback, and conversations
+- Supabase Storage for listing photos
+- Netlify for static hosting
 
-See `BUILD-CONNECT-MANUAL.md` for the full build, Supabase, Google sign-in, and Netlify workflow we followed.
+The public repository includes `config.example.js` as a template only. A real deployment needs a local `config.js` file with that deployment's own Supabase project URL and anon/publishable key. Do not commit `config.js`.
 
-Only use the anon public key in `config.js`. Never paste a Supabase service role key into frontend code.
+Private values that should never be committed:
 
-## Netlify Setup
+- Supabase service role keys
+- Supabase database password
+- Google OAuth client secret
+- Payment provider secrets
+- `.env` files
+- Real tester data, private messages, or private payment details
 
-1. Create a free Netlify account.
-2. Deploy this folder with Netlify Drop or connect it to a Git repository.
-3. In Supabase Auth settings, add your Netlify URL to the allowed site/redirect URLs.
-4. In Google Cloud OAuth settings, add your Netlify URL as an authorized JavaScript origin.
-5. Test Google sign-in, listing creation, and photo uploads.
+The SQL files in this repository document the database structure, Row Level Security policies, storage rules, and security hardening work used for the beta. They are included for transparency and reproducibility, but live credentials are not included.
 
-The app still runs in local preview mode when `config.js` is empty, but live users need Supabase connected.
+For a private deployment, configure the hosting domain in Supabase Auth redirect settings and Google OAuth settings. Keep redirect URLs limited to trusted local, Netlify, or custom production domains.
 
-The app includes `noindex` settings for testing so search engines are discouraged from indexing the Netlify test URL. This is not the same as password protection.
-
-## Rename Netlify URL
-
-In Netlify, open the site dashboard, go to Site configuration or Site settings, then change the site name. A name like `thebellydancedressingroom` gives you a prettier URL if it is available:
-
-```text
-https://thebellydancedressingroom.netlify.app/
-```
-
-After renaming, update both Supabase Auth URL settings and Google Cloud Authorized JavaScript origins with the new Netlify URL.
+The app includes `noindex` settings for beta testing so search engines are discouraged from indexing the test URL. This is helpful for a private beta, but it is not the same as password protection.
 
 ## Run locally
 
-Open `index.html` directly, or run a static server from this folder:
+Open `index.html` directly for a static preview, or run a static server from this folder:
 
 ```powershell
 python -m http.server 5173
