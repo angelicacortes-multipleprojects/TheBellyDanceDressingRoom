@@ -1,0 +1,486 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0e3f44" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="description" content="TheBellyDanceDressingRoom is an App developed by Laniakea Bellydancer LLC to help dancers around the world to buy and sell dresses in a centralized manner. About me: Laniakea Bellydancer is a Puerto Rican artist based in Maryland, USA. She loves gigging and understands the importance of getting new costumes to support all your performance needs!" />
+    <title>TheBellyDanceDressingRoom</title>
+    <link rel="manifest" href="manifest.json" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#listing-grid">Skip to dress listings</a>
+    <main class="app-shell" aria-label="TheBellyDanceDressingRoom mobile app">
+      <section class="screen active" id="market-screen" aria-labelledby="market-title" aria-hidden="false">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow brand-name">TheBellyDanceDressingRoom</p>
+            <h1 id="market-title">Find your next stage dress</h1>
+          </div>
+          <button class="icon-button" type="button" data-open-sell aria-label="Post a dress">+</button>
+        </header>
+
+        <section class="about-panel" aria-labelledby="about-title">
+          <p class="eyebrow">About</p>
+          <h2 id="about-title">TheBellyDanceDressingRoom</h2>
+          <p class="about-statement">
+            TheBellyDanceDressingRoom is an App developed by Laniakea Bellydancer LLC to help
+            dancers around the world to buy and sell dresses in a centralized manner.
+          </p>
+          <p class="developer-credit">
+            About me: Laniakea Bellydancer is a Puerto Rican artist based in Maryland, USA. She
+            loves gigging and understands the importance of getting new costumes to support all
+            your performance needs!
+          </p>
+        </section>
+
+        <section class="account-panel" aria-labelledby="account-title">
+          <div class="account-heading">
+            <div>
+              <p class="eyebrow">Account</p>
+              <h2 id="account-title">Sign in to sell</h2>
+            </div>
+            <span class="status-pill" id="backend-status">Local preview</span>
+          </div>
+          <p id="account-message" class="account-message" aria-live="polite">Connect Supabase to enable real sign-up, shared listings, and cloud photo uploads.</p>
+          <form class="profile-form" id="profile-form">
+            <label>
+              Seller display name
+              <input id="display-name-input" type="text" maxlength="60" placeholder="Laniakea Bellydancer" />
+            </label>
+            <button class="secondary-button" type="submit">Save profile</button>
+          </form>
+          <div class="auth-actions google-auth">
+            <button class="secondary-button" type="button" id="google-sign-in-button">Continue with Google</button>
+            <button class="secondary-button" type="button" id="sign-out-button" hidden>Sign out</button>
+          </div>
+        </section>
+
+        <form class="search-row" role="search">
+          <label class="search-box">
+            <span class="visually-hidden">Search dresses</span>
+            <input id="search-input" type="search" placeholder="Search color, size, designer" />
+          </label>
+          <button class="filter-button" type="button" id="filter-toggle" aria-expanded="false" aria-controls="filter-panel">Filter</button>
+        </form>
+
+        <form class="filter-panel" id="filter-panel" hidden>
+          <label>
+            Style
+            <select id="style-filter">
+              <option value="">Any style</option>
+              <option>Folklore dress</option>
+              <option>Two piece dress</option>
+              <option>Cabaret dress</option>
+              <option>Baladi dress</option>
+              <option>Saidi dress</option>
+              <option>Practice dress</option>
+            </select>
+          </label>
+          <label>
+            Color
+            <select id="color-filter">
+              <option value="">Any color</option>
+              <option>Black</option>
+              <option>White</option>
+              <option>Red</option>
+              <option>Pink</option>
+              <option>Orange</option>
+              <option>Yellow</option>
+              <option>Gold</option>
+              <option>Green</option>
+              <option>Teal</option>
+              <option>Blue</option>
+              <option>Purple</option>
+              <option>Silver</option>
+              <option>Multicolor</option>
+            </select>
+          </label>
+          <label>
+            Designer
+            <select id="designer-filter">
+              <option value="">Any designer</option>
+              <option>Eman Zaki</option>
+              <option>Mamdouh Morise / Magic Dance Shop</option>
+              <option>Olga Aida / Aida Style</option>
+              <option>Bella</option>
+              <option>Michelle</option>
+              <option>Ambar</option>
+              <option>Laura Scimone / Moonlight Design</option>
+              <option>Zaina</option>
+              <option>Eman Ibrahim Ahmed</option>
+              <option>Hanan</option>
+              <option>Hoda Zaki</option>
+              <option>Madam Abla</option>
+              <option>Madame Nusa/Noussa</option>
+              <option>Mira Abo-Elsoud</option>
+              <option>Mumtaz</option>
+              <option>Sahar Okasha</option>
+              <option>Yasso</option>
+              <option>Dogan Gok</option>
+              <option>Fearless Glamour</option>
+              <option>Crimson Gypsy Designs</option>
+              <option>Dahlal International</option>
+              <option>Bella of Istanbul</option>
+              <option>Katalin Schafer</option>
+              <option>Madela Dance Design</option>
+              <option>Amira Natalia Kalinina</option>
+              <option>Natalie Becker</option>
+              <option>Sufel Boutique</option>
+              <option>Other / unknown</option>
+            </select>
+          </label>
+          <label>
+            Size
+            <select id="size-filter">
+              <option value="">Any size</option>
+              <option>XS</option>
+              <option>S</option>
+              <option>M</option>
+              <option>L</option>
+              <option>XL</option>
+              <option>2X+</option>
+            </select>
+          </label>
+          <label>
+            Location
+            <select id="location-filter">
+              <option value="">Any location</option>
+              <option>North America</option>
+              <option>South America</option>
+              <option>Europe</option>
+              <option>Africa</option>
+              <option>Asia</option>
+              <option>Australia/Oceania</option>
+              <option>Worldwide shipping</option>
+            </select>
+          </label>
+          <button class="secondary-button" type="button" id="clear-filters">Clear filters</button>
+        </form>
+
+        <div class="chip-row" aria-label="Listing filters">
+          <button class="chip active" type="button" data-filter="all">All</button>
+          <button class="chip" type="button" data-filter="ready">Ready to ship</button>
+          <button class="chip" type="button" data-filter="under300">Under $300</button>
+          <button class="chip" type="button" data-filter="plus">Plus sizes</button>
+        </div>
+
+        <section class="listing-grid" id="listing-grid" aria-label="Dresses for sale"></section>
+
+        <section class="terms-panel footer-panel" aria-labelledby="terms-title">
+          <p class="eyebrow">Terms & Privacy</p>
+          <h2 id="terms-title">Private beta terms</h2>
+          <p>
+            TheBellyDanceDressingRoom is currently a private beta for trusted testers. Post only
+            dresses you own or are authorized to sell, use actual photos, describe condition and
+            measurements honestly, and do not copy, scrape, or redistribute listings.
+          </p>
+          <p>
+            Sign-in is handled by Google through Supabase. Listing details, seller display names,
+            payment-contact fields, feedback, reports, and uploaded photos are stored in Supabase
+            so this test marketplace can function. Do not place sensitive personal information in
+            public listing details.
+          </p>
+          <p>
+            Payments are arranged directly between buyer and seller. The app does not process,
+            hold, guarantee, refund, or mediate payments during this beta.
+          </p>
+        </section>
+
+        <section class="safety-panel footer-panel" aria-labelledby="safety-title">
+          <p class="eyebrow">Safety</p>
+          <h2 id="safety-title">Abuse and spam plan</h2>
+          <ul>
+            <li>Google sign-in is required to post, report, or save seller profile details.</li>
+            <li>Listings can be reported for fake photos, spam, harassment, unsafe payment requests, or misleading condition details.</li>
+            <li>Problem listings can be deleted or hidden from Supabase while reports are reviewed.</li>
+            <li>Beta testers should share the link only with trusted dancers until moderation is stronger.</li>
+          </ul>
+        </section>
+
+        <section class="feedback-panel footer-panel" aria-labelledby="feedback-title">
+          <p class="eyebrow">Feedback</p>
+          <h2 id="feedback-title">Help improve the beta</h2>
+          <form class="feedback-form" id="feedback-form">
+            <label>
+              What should be improved?
+              <textarea name="feedback" rows="4" required placeholder="Tell us what felt confusing, missing, or helpful."></textarea>
+            </label>
+            <label>
+              Contact email (optional)
+              <input name="contact" type="email" placeholder="you@example.com" />
+            </label>
+            <button class="primary-button" type="submit">Send feedback</button>
+          </form>
+          <p class="form-note" id="feedback-note" aria-live="polite">Feedback is saved for beta review.</p>
+        </section>
+      </section>
+
+      <section class="screen" id="sell-screen" aria-labelledby="sell-title" aria-hidden="true">
+        <header class="topbar compact">
+          <button class="icon-button ghost" type="button" data-open-market aria-label="Back to market">&lt;</button>
+          <div>
+            <p class="eyebrow">Sell</p>
+            <h2 id="sell-title">Post a dress</h2>
+          </div>
+        </header>
+
+        <form class="sell-form" id="sell-form">
+          <p class="form-note" id="sell-note" aria-live="polite">Local preview mode is active. Connect Supabase before inviting real sellers.</p>
+          <label class="photo-drop" id="photo-drop">
+            <input id="photo-input" type="file" accept="image/*" multiple aria-describedby="photo-empty" />
+            <span id="photo-empty">Add 1 to 5 actual listing photos</span>
+          </label>
+          <div class="photo-preview-grid" id="photo-preview-grid" aria-label="Selected listing photos"></div>
+
+          <div class="field-grid">
+            <label>
+              Dress name
+              <input name="name" required placeholder="Emerald Saidi set" />
+            </label>
+            <label>
+              Price (USD)
+              <input name="price" required inputmode="numeric" placeholder="280" />
+            </label>
+            <label>
+              Size
+              <select name="size" required>
+                <option value="">Choose</option>
+                <option>XS</option>
+                <option>S</option>
+                <option>M</option>
+                <option>L</option>
+                <option>XL</option>
+                <option>2X+</option>
+              </select>
+            </label>
+            <label>
+              Condition
+              <select name="condition" required>
+                <option>Show ready</option>
+                <option>Minor repairs</option>
+                <option>Practice wear</option>
+              </select>
+            </label>
+            <label>
+              Style
+              <select name="style" required>
+                <option value="">Choose</option>
+                <option>Folklore dress</option>
+                <option>Two piece dress</option>
+                <option>Cabaret dress</option>
+                <option>Baladi dress</option>
+                <option>Saidi dress</option>
+                <option>Practice dress</option>
+              </select>
+            </label>
+            <label>
+              Designer
+              <select name="designer" required>
+                <option value="">Choose</option>
+                <option>Eman Zaki</option>
+                <option>Mamdouh Morise / Magic Dance Shop</option>
+                <option>Olga Aida / Aida Style</option>
+                <option>Bella</option>
+                <option>Michelle</option>
+                <option>Ambar</option>
+                <option>Laura Scimone / Moonlight Design</option>
+                <option>Zaina</option>
+                <option>Eman Ibrahim Ahmed</option>
+                <option>Hanan</option>
+                <option>Hoda Zaki</option>
+                <option>Madam Abla</option>
+                <option>Madame Nusa/Noussa</option>
+                <option>Mira Abo-Elsoud</option>
+                <option>Mumtaz</option>
+                <option>Sahar Okasha</option>
+                <option>Yasso</option>
+                <option>Dogan Gok</option>
+                <option>Fearless Glamour</option>
+                <option>Crimson Gypsy Designs</option>
+                <option>Dahlal International</option>
+                <option>Bella of Istanbul</option>
+                <option>Katalin Schafer</option>
+                <option>Madela Dance Design</option>
+                <option>Amira Natalia Kalinina</option>
+                <option>Natalie Becker</option>
+                <option>Sufel Boutique</option>
+                <option>Other / unknown</option>
+              </select>
+            </label>
+            <label>
+              Color
+              <select name="color" required>
+                <option value="">Choose</option>
+                <option>Black</option>
+                <option>White</option>
+                <option>Red</option>
+                <option>Pink</option>
+                <option>Orange</option>
+                <option>Yellow</option>
+                <option>Gold</option>
+                <option>Green</option>
+                <option>Teal</option>
+                <option>Blue</option>
+                <option>Purple</option>
+                <option>Silver</option>
+                <option>Multicolor</option>
+              </select>
+            </label>
+          </div>
+
+          <label>
+            Location
+            <select name="location" required>
+              <option value="">Choose</option>
+              <option>North America</option>
+              <option>South America</option>
+              <option>Europe</option>
+              <option>Africa</option>
+              <option>Asia</option>
+              <option>Australia/Oceania</option>
+              <option>Worldwide shipping</option>
+            </select>
+          </label>
+
+          <label>
+            Details
+            <textarea name="details" rows="4" placeholder="Measurements, stretch, missing stones, included pieces"></textarea>
+          </label>
+
+          <fieldset class="payment-fields">
+            <legend>Seller payment options</legend>
+            <p class="form-note">Add only the payment handles or links you want buyers to see.</p>
+            <label>
+              PayPal.me link
+              <input name="paypal" type="url" placeholder="https://paypal.me/yourname" />
+            </label>
+            <label>
+              Venmo
+              <input name="venmo" type="text" placeholder="@yourvenmo" />
+            </label>
+            <label>
+              Cash App
+              <input name="cashapp" type="text" placeholder="$yourcashtag" />
+            </label>
+            <label>
+              Zelle
+              <input name="zelle" type="text" placeholder="Email or phone for Zelle" />
+            </label>
+            <label>
+              Other payment note
+              <input name="paymentNote" type="text" placeholder="Invoice available, local cash, etc." />
+            </label>
+          </fieldset>
+
+          <label class="toggle-row">
+            <input name="ship" type="checkbox" checked />
+            Ready to ship this week
+          </label>
+
+          <div class="form-actions">
+            <button class="primary-button" type="submit" id="publish-button">Publish listing</button>
+            <button class="secondary-button" type="button" id="cancel-edit-button" hidden>Cancel edit</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="screen" id="saved-screen" aria-labelledby="saved-title" aria-hidden="true">
+        <header class="topbar compact">
+          <div>
+            <p class="eyebrow">Saved</p>
+            <h2 id="saved-title">Wishlist</h2>
+          </div>
+        </header>
+        <section class="listing-grid" id="saved-grid" aria-label="Saved dresses"></section>
+      </section>
+
+      <section class="screen" id="inbox-screen" aria-labelledby="inbox-title" aria-hidden="true">
+        <header class="topbar compact">
+          <div>
+            <p class="eyebrow">Inbox</p>
+            <h2 id="inbox-title">Buyer chats</h2>
+          </div>
+        </header>
+        <div class="chat-list" id="chat-list" aria-label="Inbox conversations"></div>
+        <section class="conversation-panel" id="conversation-panel" hidden aria-labelledby="conversation-title">
+          <div class="conversation-heading">
+            <div>
+              <p class="eyebrow">Conversation</p>
+              <h3 id="conversation-title">Select a message</h3>
+            </div>
+            <button class="secondary-button" type="button" id="close-conversation">Close</button>
+          </div>
+          <div class="message-thread" id="message-thread" aria-live="polite"></div>
+          <form class="reply-form" id="reply-form">
+            <label>
+              Reply
+              <textarea id="reply-input" rows="3" required placeholder="Write a reply..."></textarea>
+            </label>
+            <button class="primary-button" type="submit">Send reply</button>
+          </form>
+        </section>
+      </section>
+
+      <nav class="tabbar" aria-label="Primary">
+        <button class="tab active" type="button" data-tab="market-screen" aria-current="page">Market</button>
+        <button class="tab" type="button" data-tab="sell-screen">Sell</button>
+        <button class="tab" type="button" data-tab="saved-screen">Saved</button>
+        <button class="tab" type="button" data-tab="inbox-screen">
+          Inbox
+          <span class="notification-badge" id="inbox-badge" aria-live="polite" hidden>0</span>
+        </button>
+      </nav>
+    </main>
+
+    <template id="listing-template">
+      <article class="listing-card">
+        <button class="save-button" type="button" aria-label="Save listing">♡ Save</button>
+        <div class="listing-gallery">
+          <img class="listing-image" alt="" />
+          <button class="zoom-button" type="button">Zoom photo</button>
+          <button class="gallery-button previous" type="button" aria-label="Previous photo">&lt;</button>
+          <button class="gallery-button next" type="button" aria-label="Next photo">&gt;</button>
+          <span class="photo-count"></span>
+        </div>
+        <div class="listing-body">
+          <div class="listing-title-row">
+            <h3></h3>
+            <strong></strong>
+          </div>
+          <p class="listing-meta"></p>
+          <p class="seller-name"></p>
+          <p class="listing-details"></p>
+          <div class="payment-options" hidden>
+            <strong>Payment options</strong>
+            <ul></ul>
+            <p>Coordinate payment directly with the seller. Payments are not processed inside this test app.</p>
+          </div>
+          <div class="owner-actions" hidden>
+            <button class="secondary-button" type="button" data-action="edit">Edit</button>
+            <button class="secondary-button" type="button" data-action="sold">Mark sold</button>
+            <button class="danger-button" type="button" data-action="delete">Delete</button>
+          </div>
+          <button class="report-button" type="button">Report listing</button>
+          <button class="message-button" type="button">Message seller</button>
+        </div>
+      </article>
+    </template>
+
+    <div class="photo-viewer" id="photo-viewer" hidden role="dialog" aria-modal="true" aria-labelledby="photo-viewer-title">
+      <div class="photo-viewer-panel">
+        <div class="photo-viewer-heading">
+          <h2 id="photo-viewer-title">Listing photo</h2>
+          <button class="secondary-button" type="button" id="close-photo-viewer">Close</button>
+        </div>
+        <img id="photo-viewer-image" alt="" />
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "name": "TheBellyDanceDressingRoom",
+  "short_name": "DressingRoom",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#fbf8f1",
+  "theme_color": "#0e3f44",
+  "description": "TheBellyDanceDressingRoom is an App developed by Laniakea Bellydancer LLC to help dancers around the world to buy and sell dresses in a centralized manner. About me: Laniakea Bellydancer is a Puerto Rican artist based in Maryland, USA. She loves gigging and understands the importance of getting new costumes to support all your performance needs!"
+}
