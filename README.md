@@ -2,6 +2,9 @@
 
 TheBellyDanceDressingRoom is a mobile-friendly marketplace prototype developed by Angelica to help dancers buy and sell bellydance dresses in a more centralized, organized way.
 
+<img width="406" height="327" alt="listing" src="https://github.com/user-attachments/assets/3523fcca-4722-4d4b-9e94-9eede9075df2" />
+
+
 ## Project Narrative
 
 TheBellyDanceDressingRoom began as a focused marketplace prototype for a real community need: bellydancers often buy, sell, and trade costumes through scattered social media posts, private chats, and informal networks. The goal of this project was to centralize that experience into a simple mobile-friendly app where dancers can browse real listings, upload dress photos, contact sellers, and manage resale activity in one place.
