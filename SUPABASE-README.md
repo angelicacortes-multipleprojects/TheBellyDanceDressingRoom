@@ -5,6 +5,7 @@ This project uses one Supabase project with the normal `public` schema. The SQL 
 ## Current Supabase Objects
 
 - `profiles`: seller profile records linked to Supabase Auth users.
+- `app_admins`: private admin allowlist used to give Angelica moderator controls.
 - `listings`: dress listings with USD price, designer, seller owner ID, seller name, status, details, and 1 to 5 photo URLs.
 - `listings.payment_options`: seller-provided payment handles or links for manual off-app payment coordination.
 - `listing_reports`: moderation reports submitted by signed-in users.
@@ -66,6 +67,7 @@ Do not run SQL for simple app changes like copy, colors, layout, accessibility t
 - `supabase-inbox-status.sql`: lets conversation participants update inquiry status so seller Inbox notifications clear after replies.
 - `supabase-designer-category.sql`: designer dropdown/filter field on listings.
 - `supabase-listing-ownership.sql`: confirms only listing owners can create, update, delete, or mark their own listings as sold.
+- `supabase-admin-override.sql`: adds an admin allowlist so only approved admin accounts can edit, delete, or mark any listing as sold.
 
 For future changes, create a new dated SQL file instead of editing an already-run migration, for example:
 

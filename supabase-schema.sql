@@ -7,6 +7,11 @@ create table if not exists public.profiles (
   created_at timestamptz not null default now()
 );
 
+create table if not exists public.app_admins (
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  created_at timestamptz not null default now()
+);
+
 create table if not exists public.listings (
   id uuid primary key default gen_random_uuid(),
   owner_id uuid not null references auth.users(id) on delete cascade,
@@ -66,6 +71,7 @@ create table if not exists public.inquiry_messages (
 );
 
 alter table public.profiles enable row level security;
+alter table public.app_admins enable row level security;
 alter table public.listings enable row level security;
 alter table public.listing_reports enable row level security;
 alter table public.beta_feedback enable row level security;
@@ -74,6 +80,7 @@ alter table public.inquiry_messages enable row level security;
 
 grant usage on schema public to anon, authenticated;
 grant select on public.profiles to anon, authenticated;
+grant select on public.app_admins to authenticated;
 grant select on public.listings to anon, authenticated;
 grant insert, update, delete on public.profiles to authenticated;
 grant insert, update, delete on public.listings to authenticated;
@@ -100,6 +107,10 @@ create policy "Users can update their own profile"
   using (auth.uid() = id)
   with check (auth.uid() = id);
 
+create policy "Users can read their own admin status"
+  on public.app_admins for select
+  using (auth.uid() = user_id);
+
 create policy "Active and sold listings are public"
   on public.listings for select
   using (status in ('active', 'sold'));
@@ -108,14 +119,35 @@ create policy "Signed-in users can create their own listings"
   on public.listings for insert
   with check (auth.uid() = owner_id);
 
-create policy "Owners can update their own listings"
+create policy "Owners and admins can update listings"
   on public.listings for update
-  using (auth.uid() = owner_id)
-  with check (auth.uid() = owner_id);
+  using (
+    auth.uid() = owner_id
+    or exists (
+      select 1
+      from public.app_admins admin
+      where admin.user_id = auth.uid()
+    )
+  )
+  with check (
+    auth.uid() = owner_id
+    or exists (
+      select 1
+      from public.app_admins admin
+      where admin.user_id = auth.uid()
+    )
+  );
 
-create policy "Owners can delete their own listings"
+create policy "Owners and admins can delete listings"
   on public.listings for delete
-  using (auth.uid() = owner_id);
+  using (
+    auth.uid() = owner_id
+    or exists (
+      select 1
+      from public.app_admins admin
+      where admin.user_id = auth.uid()
+    )
+  );
 
 create policy "Signed-in users can create reports"
   on public.listing_reports for insert

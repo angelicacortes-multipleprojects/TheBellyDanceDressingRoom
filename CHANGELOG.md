@@ -39,6 +39,7 @@
 - Added `SECURITY-CHECKLIST.md` to track app security review status and remaining launch risks.
 - Added `.gitignore` to keep `config.js`, `.env` files, source maps, and build folders out of GitHub.
 - Added `supabase-security-hardening.sql` to narrow database grants for reports, feedback, and inquiry status updates.
+- Added `supabase-admin-override.sql` so Angelica can be added as an app admin and moderate any listing.
 
 ### Changed
 - Added stronger Netlify security headers in `_headers`.
@@ -47,6 +48,11 @@
 
 ### Fixed
 - Replaced one dynamic empty-state `innerHTML` path with safer text rendering.
+
+### Security
+- Added database-enforced admin override policies for listing update and delete, while keeping normal users restricted to their own listings.
+- Updated the frontend to show edit/delete/mark-sold controls only to listing owners or the configured app admin.
+- Preserved original listing ownership when the app admin edits another seller's listing.
 
 ### Documentation
 - Added `TheBellyDanceDressingRoom-Security-Checklist.docx` as a Word copy of the cybersecurity checklist for records.
@@ -63,3 +69,6 @@
 - Removed the optional contact email field from the feedback form and kept feedback tracking through Supabase.
 - Created `TheBellyDanceDressingRoom-Changelog.docx` as a Word copy of the project changelog for records.
 - Added pagination for Market and Wishlist listings so dress cards are split across pages instead of becoming one endless list.
+- Removed the top plus listing shortcut and restricted Sell/listing publish access to signed-in users only.
+- Reintroduced the signed-in-only top shortcut as a labeled `+ Post dress` button so sellers know where to upload.
+- Re-verified that only signed-in users can publish listings and only listing owners can edit, delete, or mark their own listings as sold.

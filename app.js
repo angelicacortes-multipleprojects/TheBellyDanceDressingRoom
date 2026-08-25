@@ -13,6 +13,7 @@ const state = {
   inquiryMessages: [],
   session: null,
   profile: null,
+  isAdmin: false,
   filters: {
     style: "",
     designer: "",
@@ -85,9 +86,12 @@ const inboxBadge = document.querySelector("#inbox-badge");
 const sellNote = document.querySelector("#sell-note");
 const publishButton = document.querySelector("#publish-button");
 const cancelEditButton = document.querySelector("#cancel-edit-button");
+const sellTab = document.querySelector('[data-tab="sell-screen"]');
+const openSellButton = document.querySelector("[data-open-sell]");
 let selectedFiles = [];
 let selectedPhotos = [];
 let editingListingId = null;
+let editingListingOwnerId = null;
 const maxListingPhotoBytes = 5 * 1024 * 1024;
 const listingsPerPage = 6;
 const usdFormatter = new Intl.NumberFormat("en-US", {
@@ -142,17 +146,26 @@ function updateAccountUi() {
     googleSignInButton.disabled = true;
     profileForm.hidden = true;
     signOutButton.hidden = true;
+    openSellButton.hidden = true;
+    sellTab.disabled = true;
+    publishButton.disabled = true;
     sellNote.textContent = "Local preview mode is active. Connect Supabase before inviting real sellers.";
     return;
   }
 
   backendStatus.textContent = state.session ? "Signed in" : "Supabase ready";
   accountMessage.textContent = state.session
-    ? `Signed in as ${state.session.user.email}. Listings will show as ${getSellerName()}.`
+    ? `Signed in as ${state.session.user.email}. Listings will show as ${getSellerName()}.${state.isAdmin ? " Admin mode is enabled." : ""}`
     : "Continue with Google before publishing a live listing.";
   googleSignInButton.disabled = Boolean(state.session);
   profileForm.hidden = !state.session;
   signOutButton.hidden = !state.session;
+  openSellButton.hidden = !state.session;
+  sellTab.disabled = !state.session;
+  publishButton.disabled = !state.session;
+  if (!state.session && document.querySelector("#sell-screen").classList.contains("active")) {
+    showScreen("market-screen");
+  }
   sellNote.textContent = state.session
     ? "You are signed in. Your listing photos will upload to Supabase Storage."
     : "Sign in before publishing a live listing.";
@@ -163,6 +176,11 @@ function getSellerName() {
 }
 
 function showScreen(id) {
+  if (id === "sell-screen" && !state.session) {
+    accountMessage.textContent = "Please sign in with Google before posting a dress.";
+    id = "market-screen";
+  }
+
   screens.forEach((screen) => {
     const isActive = screen.id === id;
     screen.classList.toggle("active", isActive);
@@ -305,7 +323,7 @@ function createListingCard(item) {
   const paymentOptions = node.querySelector(".payment-options");
   const paymentList = paymentOptions.querySelector("ul");
   const images = item.images || [];
-  const isOwner = isListingOwner(item);
+  const canManage = canManageListing(item);
   let photoIndex = 0;
 
   image.alt = item.name;
@@ -323,11 +341,11 @@ function createListingCard(item) {
   saveButton.textContent = isSaved ? "♥ Saved" : "♡ Save";
   saveButton.addEventListener("click", () => toggleSaved(item.id));
   messageButton.addEventListener("click", () => startChat(item));
-  messageButton.hidden = isOwner;
+  messageButton.hidden = canManage;
   messageButton.disabled = item.status === "sold";
   messageButton.textContent = item.status === "sold" ? "Sold" : "Message seller";
-  ownerActions.hidden = !isOwner;
-  reportButton.hidden = isOwner;
+  ownerActions.hidden = !canManage;
+  reportButton.hidden = canManage;
   ownerActions.querySelector('[data-action="edit"]').addEventListener("click", () => startEditListing(item));
   ownerActions.querySelector('[data-action="sold"]').addEventListener("click", () => markListingSold(item));
   ownerActions.querySelector('[data-action="delete"]').addEventListener("click", () => deleteListing(item));
@@ -379,8 +397,11 @@ function closePhotoViewer() {
   photoViewerImage.removeAttribute("src");
 }
 
-function isListingOwner(item) {
-  return Boolean(state.session && String(item.ownerId) === String(state.session.user.id));
+function canManageListing(item) {
+  return Boolean(
+    state.session &&
+    (state.isAdmin || String(item.ownerId) === String(state.session.user.id))
+  );
 }
 
 function listingMeta(item) {
@@ -686,6 +707,20 @@ async function loadProfile() {
   updateAccountUi();
 }
 
+async function loadAdminStatus() {
+  state.isAdmin = false;
+
+  if (!supabaseClient || !state.session) return;
+
+  const { data, error } = await supabaseClient
+    .from("app_admins")
+    .select("user_id")
+    .eq("user_id", state.session.user.id)
+    .maybeSingle();
+
+  state.isAdmin = Boolean(data && !error);
+}
+
 async function saveProfile(event) {
   event.preventDefault();
   if (!supabaseClient || !state.session) return;
@@ -738,6 +773,10 @@ async function uploadListingPhotos(listingId) {
 }
 
 async function publishListing(listing) {
+  if (!state.session) {
+    throw new Error("Please sign in before publishing a listing.");
+  }
+
   if (!supabaseClient) {
     state.listings = editingListingId
       ? state.listings.map((item) => item.id === editingListingId ? listing : item)
@@ -746,12 +785,8 @@ async function publishListing(listing) {
     return;
   }
 
-  if (!state.session) {
-    throw new Error("Please sign in before publishing a live listing.");
-  }
-
   const payload = {
-    owner_id: state.session.user.id,
+    owner_id: editingListingId ? editingListingOwnerId : state.session.user.id,
     name: listing.name,
     price: listing.price,
     size: listing.size,
@@ -782,12 +817,13 @@ async function publishListing(listing) {
 }
 
 function startEditListing(item) {
-  if (!isListingOwner(item)) {
-    accountMessage.textContent = "Only the seller who posted this listing can edit it.";
+  if (!canManageListing(item)) {
+    accountMessage.textContent = "Only the seller who posted this listing or the app admin can edit it.";
     return;
   }
 
   editingListingId = item.id;
+  editingListingOwnerId = item.ownerId;
   sellForm.elements.name.value = item.name;
   sellForm.elements.price.value = item.price;
   sellForm.elements.size.value = item.size;
@@ -814,6 +850,7 @@ function startEditListing(item) {
 
 function cancelEdit() {
   editingListingId = null;
+  editingListingOwnerId = null;
   sellForm.reset();
   selectedFiles = [];
   selectedPhotos = [];
@@ -825,8 +862,8 @@ function cancelEdit() {
 
 async function markListingSold(item) {
   if (!supabaseClient || !state.session) return;
-  if (!isListingOwner(item)) {
-    accountMessage.textContent = "Only the seller who posted this listing can mark it as sold.";
+  if (!canManageListing(item)) {
+    accountMessage.textContent = "Only the seller who posted this listing or the app admin can mark it as sold.";
     return;
   }
   if (!window.confirm(`Mark "${item.name}" as sold?`)) return;
@@ -849,8 +886,8 @@ async function markListingSold(item) {
 }
 
 async function deleteListing(item) {
-  if (!isListingOwner(item)) {
-    accountMessage.textContent = "Only the seller who posted this listing can delete it.";
+  if (!canManageListing(item)) {
+    accountMessage.textContent = "Only the seller who posted this listing or the app admin can delete it.";
     return;
   }
 
@@ -936,7 +973,7 @@ async function signInWithGoogle() {
 }
 
 tabs.forEach((tab) => tab.addEventListener("click", () => showScreen(tab.dataset.tab)));
-document.querySelector("[data-open-sell]").addEventListener("click", () => showScreen("sell-screen"));
+openSellButton.addEventListener("click", () => showScreen("sell-screen"));
 document.querySelector("[data-open-market]").addEventListener("click", () => showScreen("market-screen"));
 googleSignInButton.addEventListener("click", signInWithGoogle);
 signOutButton.addEventListener("click", async () => {
@@ -1069,6 +1106,12 @@ function renderSelectedPhotoPreviews() {
 
 sellForm.addEventListener("submit", async (event) => {
   event.preventDefault();
+  if (!state.session) {
+    sellNote.textContent = "Please sign in with Google before publishing a listing.";
+    showScreen("market-screen");
+    return;
+  }
+
   selectedPhotos = selectedPhotos.filter(Boolean).slice(0, 5);
   selectedFiles = selectedFiles.slice(0, 5);
   if (!selectedPhotos.length) {
@@ -1082,6 +1125,7 @@ sellForm.addEventListener("submit", async (event) => {
     const imageUrls = selectedFiles.length ? await uploadListingPhotos(id) : [...selectedPhotos];
     const listing = {
       id,
+      ownerId: editingListingId ? editingListingOwnerId : state.session.user.id,
       name: String(form.get("name")).trim(),
       price: Number(String(form.get("price")).replace(/[^\d]/g, "")),
       size: String(form.get("size")),
@@ -1119,11 +1163,15 @@ async function init() {
     const { data } = await supabaseClient.auth.getSession();
     state.session = data.session;
     await loadProfile();
+    await loadAdminStatus();
     await refreshInboxCount();
-    supabaseClient.auth.onAuthStateChange((_event, session) => {
+    supabaseClient.auth.onAuthStateChange(async (_event, session) => {
       state.session = session;
-      loadProfile();
+      await loadProfile();
+      await loadAdminStatus();
       updateAccountUi();
+      renderListings();
+      renderSaved();
       refreshInboxCount();
     });
   }
